@@ -1,7 +1,10 @@
 import multer from "multer"
 import fs from "fs"
 import path from "path"
+import {fileURLToPath} from "url"
 
+const _fileName = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(_fileName)
 const uploadPath = path.join(__dirname, '..', 'uploads');
 
 if (!fs.existsSync(uploadPath)) {
@@ -22,10 +25,10 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 1024 * 1024 // Limit file size to 5MB
+        fileSize: 5* 1024 * 1024 // Limit file size to 5MB
     },
     fileFilter: function (req, file, cb) {
-        const filetypes = /mp4/;
+        const filetypes = /webm/;
         const mimetype = filetypes.test(file.mimetype);
         const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
 

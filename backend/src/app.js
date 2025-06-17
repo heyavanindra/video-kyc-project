@@ -2,7 +2,10 @@ import express from 'express';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import videoRouter from './routes/video.route.js';
+import cors from 'cors'
 const app = express();
+
+app.use(cors())
 
 dotenv.config();
 

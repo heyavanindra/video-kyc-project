@@ -8,13 +8,7 @@ const videoRouter = express.Router()
 videoRouter.post("/", upload.single("file"), async (req, res) => {
     const { name, username } = req.body
 
-    if (!name || !username) {
-        return res.json({
-            success: false,
-            message: "Name or username is undefined"
-        }).status(503)
-
-    }
+    
     if (!req.file) {
         return res.json({
             success: false,
@@ -23,9 +17,18 @@ videoRouter.post("/", upload.single("file"), async (req, res) => {
     }
 
     const filePath = req.file.path
+    console.log(filePath)
 
     try {
-        const url = uploadFileToGoogleDrive(filePath)
+        console.log("in the try block")
+        const url = await uploadFileToGoogleDrive(filePath)
+        console.log("after the try ")
+        console.log(url)
+        if (!url) {
+            res.status(503).json({
+                success:"failed to upload video"
+            })
+        }
         fs.unlink(filePath, async (error) => {
             if (error) {
                 console.log(`error at unlinking file ${error.message}`)
@@ -33,8 +36,6 @@ videoRouter.post("/", upload.single("file"), async (req, res) => {
         })
 
         const newUser = await new userModel({
-            name: name,
-            username: username,
             videoUrl: url
         })
 
